@@ -1,0 +1,11 @@
+{
+  "scenario": "Create project token - specific expiry 60s",
+  "command": "vault write $ENGINE_PATH/project/unprotected-cell-monitor/role/dev-role ttl=60s -format=json",
+  "assert": {
+    "lease_duration": "60",
+    "data": {
+      "project_name": "unprotected-cell-monitor",
+      "data.project_role_name": "dev-role"
+    }
+  }
+}

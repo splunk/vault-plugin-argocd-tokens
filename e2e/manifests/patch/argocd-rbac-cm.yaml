@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name: argocd-rbac-cm
+    app.kubernetes.io/part-of: argocd
+  name: argocd-rbac-cm
+data: 
+  policy.csv: |
+    p, role:admin, applications, create, */*, allow
+    p, role:admin, applications, update, */*, allow
+    p, role:admin, applications, delete, */*, allow
+    p, role:admin, applications, sync, */*, allow
+    p, role:admin, applications, override, */*, allow
+    p, role:admin, applications, action/*, */*, allow
+    p, role:admin, certificates, create, *, allow
+    p, role:admin, certificates, update, *, allow
+    p, role:admin, certificates, delete, *, allow
+    p, role:admin, clusters, create, *, allow
+    p, role:admin, clusters, update, *, allow
+    p, role:admin, clusters, delete, *, allow
+    p, role:admin, repositories, create, *, allow
+    p, role:admin, repositories, update, *, allow
+    p, role:admin, repositories, delete, *, allow
+    p, role:admin, projects, create, *, allow
+    p, role:admin, projects, update, *, allow
+    p, role:admin, projects, delete, *, allow
+    p, role:admin, accounts, update, *, allow
+    p, role:admin, gpgkeys, create, *, allow
+    p, role:admin, gpgkeys, delete, *, allow
+    
+    g, argocd-tokens-plugin, role:admin

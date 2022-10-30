@@ -1,0 +1,40 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: executor-edit
+  namespace: argocd-tokens-vault-plugin-testing
+subjects:
+  - kind: ServiceAccount
+    name: executor
+    namespace: argocd-tokens-vault-plugin-testing
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: argocd-tokens-vault-plugin-testing
+  name: executor-roles
+rules:
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings"]
+    verbs: ["*"]
+  - apiGroups: ["networking.istio.io"]
+    resources: ["virtualservices"]
+    verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: executor-roles
+  namespace: argocd-tokens-vault-plugin-testing
+subjects:
+  - kind: ServiceAccount
+    name: executor
+    namespace: argocd-tokens-vault-plugin-testing
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: executor-roles

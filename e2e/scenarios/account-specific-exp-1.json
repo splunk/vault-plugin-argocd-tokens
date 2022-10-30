@@ -1,0 +1,10 @@
+{
+  "scenario": "Create account token with a specific expiry - 10s",
+  "command": "vault write $ENGINE_PATH/account/repo-reporting ttl=10s -format=json",
+  "assert": {
+    "lease_duration": "10",
+    "data": {
+      "account_name": "repo-reporting"
+    }
+  }
+}

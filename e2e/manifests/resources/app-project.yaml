@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: unprotected-cell-monitor
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Example Project
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: default
+    server: https://kubernetes.default.svc
+  roles:
+  - name: dev-role
+    description: Privileges to unprotected-cell-monitor
+    policies:
+    - p, proj:unprotected-cell-monitor:dev-role, applications, *, unprotected-cell-monitor/*, allow

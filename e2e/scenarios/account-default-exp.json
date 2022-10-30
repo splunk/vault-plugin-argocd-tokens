@@ -1,0 +1,10 @@
+{
+  "scenario": "Create account token with the default expiry",
+  "command": "vault write -force $ENGINE_PATH/account/repo-reporting -format=json",
+  "assert": {
+    "lease_duration": "3600",
+    "data": {
+      "account_name": "repo-reporting"
+    }
+  }
+}
