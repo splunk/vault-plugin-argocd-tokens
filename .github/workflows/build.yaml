@@ -1,0 +1,57 @@
+name: Build
+on:
+  push:
+    tags:
+      - v*.*.*
+    branches:
+      - main
+      - release/v*.*.*
+  pull_request:
+    branches:
+     - main
+     - release/v*.*.*
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  Build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Golang
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19.5
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Lint
+        if: github.event_name == 'pull_request'
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.50.1
+          only-new-issues: true
+          skip-cache: true
+          skip-pkg-cache: true
+          skip-build-cache: true
+          args: --timeout=5m
+      - name: Build
+        run: make build
+  Publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Generate version
+        id: generate_version
+        run: echo "version=v0.1.$(date -u "+%Y%m%d-%H%M%S").$(git rev-parse --short HEAD 2>/dev/null || echo nocommitinfo)" >> $GITHUB_OUTPUT
+      - uses: wangyoucao577/go-release-action@v1.35
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          goos: linux
+          goarch: amd64
+          goversion: 1.19
+          project_path: ./cmd/vault-plugin-argocd-tokens
+          release_tag: ${{steps.generate_version.outputs.version}}
+
