@@ -1,4 +1,4 @@
-name: Testing
+name: Test
 on:
   push:
     tags:
@@ -14,8 +14,8 @@ permissions:
   contents: read
   pull-requests: read
 jobs:
-  test:
-    name: Unit Tests
+  Test:
+    name: Unit Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
