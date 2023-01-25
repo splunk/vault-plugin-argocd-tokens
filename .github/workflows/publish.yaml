@@ -1,0 +1,26 @@
+name: Publish Binaries
+on:
+  release:
+    types: [created]
+jobs:
+  releases-matrix:
+    name: Publish Binary
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # build and publish in parallel: linux/amd64, darwin/amd64
+        goos: [linux, darwin]
+        goarch: [amd64]
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout Repo
+      - uses: wangyoucao577/go-release-action@v1.35
+        name: Publish Binary
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          goversion: 1.19.5
+          project_path: ./cmd/vault-plugin-argocd-tokens
+          binary_name: argocd-tokens-vault-plugin
+          asset_name: argocd-tokens-vault-plugin-${{ matrix.goos }}-${{ matrix.goarch }}
