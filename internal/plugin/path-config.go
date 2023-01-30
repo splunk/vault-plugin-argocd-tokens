@@ -17,6 +17,8 @@ const (
 	cfgFldAdminToken         = "admin_token"
 	cfgFldAccountTokenMaxTTL = "account_token_max_ttl"
 	cfgFldProjectTokenMaxTTL = "project_token_max_ttl"
+	cfgFldInsecure           = "insecure"
+	cfgFldPlaintext          = "plaintext"
 	fldAccountName           = "account_name"
 	fldProjectName           = "project_name"
 	fldProjectRoleName       = "project_role_name"
@@ -33,6 +35,8 @@ type configEntry struct {
 	AdminToken         string        `json:"admin_token" structs:"admin_token" mapstructure:"admin_token"`
 	AccountTokenMaxTTL time.Duration `json:"account_token_max_ttl" structs:"account_token_max_ttl" mapstructure:"account_token_max_ttl"`
 	ProjectTokenMaxTTL time.Duration `json:"project_token_max_ttl" structs:"project_token_max_ttl" mapstructure:"project_token_max_ttl"`
+	Insecure           bool          `json:"insecure" structs:"insecure" mapstructure:"insecure"`
+	Plaintext          bool          `json:"plaintext" structs:"plaintext" mapstructure:"plaintext"`
 }
 
 // toResponse returns the logical response corresponding to the config entry, ensuring that the Admin Token is not exposed
@@ -42,6 +46,8 @@ func (c *configEntry) toResponse() *logical.Response {
 			cfgFldArgoCdUrl:          c.ArgoCDUrl,
 			cfgFldAccountTokenMaxTTL: c.AccountTokenMaxTTL.String(),
 			cfgFldProjectTokenMaxTTL: c.ProjectTokenMaxTTL.String(),
+			cfgFldInsecure:           c.Insecure,
+			cfgFldPlaintext:          c.Plaintext,
 		},
 	}
 }
@@ -63,6 +69,14 @@ var configSchema = map[string]*framework.FieldSchema{
 		Type:        framework.TypeDurationSecond,
 		Description: `Max TTL for project tokens`,
 	},
+	cfgFldInsecure: {
+		Type:        framework.TypeBool,
+		Description: `Argo CD insecure connection (This should not be used in production environment)`,
+	},
+	cfgFldPlaintext: {
+		Type:        framework.TypeBool,
+		Description: `Argo CD plaintext communication (This should not be used in production environments)`,
+	},
 }
 
 // initFromInputs initializes the entry from partial input data
@@ -78,6 +92,18 @@ func (c *configEntry) initFromInputs(data *framework.FieldData) error {
 		allErorrs = errors.Wrap(err)
 	}
 
+	//Explicitly set insecure to false by default if not provided
+	insecure, insecureErr := getFromFieldData[bool](data, cfgFldInsecure)
+	if insecureErr != nil {
+		insecure = false
+	}
+
+	//Explicitly set plaintext to false by default if not provided
+	plaintext, plaintextErr := getFromFieldData[bool](data, cfgFldPlaintext)
+	if plaintextErr != nil {
+		plaintext = false
+	}
+
 	c.AccountTokenMaxTTL = getTTLFromFieldData(data, cfgFldAccountTokenMaxTTL, 6*time.Hour, 12*time.Hour)
 	c.ProjectTokenMaxTTL = getTTLFromFieldData(data, cfgFldProjectTokenMaxTTL, 6*time.Hour, 12*time.Hour)
 
@@ -91,6 +117,8 @@ func (c *configEntry) initFromInputs(data *framework.FieldData) error {
 
 	c.AdminToken = adminToken
 	c.ArgoCDUrl = argoCDURL
+	c.Insecure = insecure
+	c.Plaintext = plaintext
 
 	return c.assertValid()
 }
@@ -126,6 +154,14 @@ func (b *backend) pathConfigWrite(ctx context.Context, req *logical.Request, dat
 		b.logger.Error(errMsg)
 		return logical.ErrorResponse(errMsg), err
 	}
+
+	if cfg.Insecure {
+		b.logger.Warn(fmt.Sprintf("ArgoCD server (%s) configured with insecure connection. This should NOT be used in a production environment!", cfg.ArgoCDUrl))
+	}
+	if cfg.Plaintext {
+		b.logger.Warn(fmt.Sprintf("ArgoCD server (%s) configured with plaintext communication. This should NOT be used in a production environment!", cfg.ArgoCDUrl))
+	}
+
 	if err := saveToStorage[configEntry](ctx, req.Storage, cfgStorageKey, &cfg); err != nil {
 		errMsg := fmt.Sprintf("error while writing config to storage: %s", err)
 		b.logger.Error(errMsg)

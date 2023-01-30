@@ -53,6 +53,8 @@ func (c *configEntry) toClientOptions() *apiclient.ClientOptions {
 		AuthToken:    c.AdminToken,
 		GRPCWeb:      true,
 		HttpRetryMax: 3,
+		Insecure:     c.Insecure,
+		PlainText:    c.Plaintext,
 	}
 
 	return &clientOptions
