@@ -1,3 +1,5 @@
 tmp/
 cover.out
 .idea
+build.yaml
+plugins/

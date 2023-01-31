@@ -15,7 +15,7 @@ permissions:
   pull-requests: read
 jobs:
   Test:
-    name: Unit Test
+    name: Unit Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,4 +25,26 @@ jobs:
         with:
           go-version: 1.19.5
       - name: Unit Test
-        run: make test      
+        run: make test    
+  E2E:
+    name: E2E
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19.5
+      - name: Setup kustomize
+        uses: imranismail/setup-kustomize@v2
+        with:
+          kustomize-version: 4.1.3
+      - name: Start minikube
+        uses: medyagh/setup-minikube@master
+        with:
+          kubernetes-version: v1.22.3
+      - name: Run Tests
+        run: make e2e
+      - name: Destroy
+        run: make destroy

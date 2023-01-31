@@ -54,9 +54,9 @@ run_scenario() {
     done
 }
 
-echo "Running tests from /e2e/scenarios"
+echo "Running tests from /scenarios"
 
-pushd ./e2e/scenarios
+pushd /scenarios
 
 mkdir -p results && touch $results_file
 

@@ -10,10 +10,8 @@ patchesStrategicMerge:
 - ./patch/argocd-applicationset-controller.yaml
 - ./patch/argocd-cm.yaml
 - ./patch/argocd-rbac-cm.yaml
-- ./patch/argocd-dex-server.yaml
 - ./patch/argocd-notifications-controller.yaml
 - ./patch/argocd-redis.yaml
 - ./patch/argocd-repo-server.yaml
 - ./patch/argocd-server.yaml
-- ./patch/argocd-svc.yaml
 

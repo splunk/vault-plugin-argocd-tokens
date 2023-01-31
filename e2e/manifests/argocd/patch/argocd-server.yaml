@@ -33,13 +33,7 @@ spec:
       containers:
       - command:
         - argocd-server
-        - --insecure
-        resources:
-          limits:
-            cpu: 200m
-            memory: 200Mi
-          requests:
-            cpu: 50m
+    #    - --insecure
         env:
         - name: ARGOCD_SERVER_INSECURE
           valueFrom:
