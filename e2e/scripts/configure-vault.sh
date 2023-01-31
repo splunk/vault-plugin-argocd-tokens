@@ -12,6 +12,6 @@ vault secrets enable -path="${ENGINE_PATH}" vault-plugin-argocd-tokens
 
 vault secrets list
 
-vault write "${ENGINE_PATH}"/config "argo_cd_url=${ARGOCD_SERVER}" "admin_token=${ARGOCD_TOKEN}" "account_token_max_ttl=1h" "project_token_max_ttl=1h"
+vault write "${ENGINE_PATH}"/config "argo_cd_url=${ARGOCD_SERVER}" "admin_token=${ARGOCD_TOKEN}" "account_token_max_ttl=1h" "project_token_max_ttl=1h" "insecure=true" "plaintext=true"
 
 vault read "${ENGINE_PATH}"/config

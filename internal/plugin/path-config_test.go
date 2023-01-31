@@ -71,7 +71,7 @@ func TestConfig(t *testing.T) {
 					t,
 					b,
 					r,
-					map[string]interface{}{"argo_cd_url": "https://argocd.wfecd.splunk.lol", "admin_token": "some-dummy-token"},
+					map[string]interface{}{"argo_cd_url": "https://argocd.wfecd.splunk.lol", "admin_token": "some-dummy-token", "plaintext": false, "insecure": false},
 					"invalid argo cd url")
 				readConfigError(t, r)
 			},
@@ -83,7 +83,7 @@ func TestConfig(t *testing.T) {
 					t,
 					b,
 					r,
-					map[string]interface{}{"argo_cd_url": "argocdurl", "admin_token": "some-dummy-token"},
+					map[string]interface{}{"argo_cd_url": "argocdurl", "admin_token": "some-dummy-token", "plaintext": false, "insecure": false},
 					"invalid argo cd url")
 				readConfigError(t, r)
 			},
@@ -123,6 +123,8 @@ func TestConfig(t *testing.T) {
 				expected.AdminToken = "some-dummy-token"
 				expected.AccountTokenMaxTTL = 6 * time.Hour
 				expected.ProjectTokenMaxTTL = 6 * time.Hour
+				expected.Plaintext = false
+				expected.Insecure = false
 				updateConfigSuccess(t, b, r, map[string]interface{}{"argo_cd_url": "argocd.wfecd.splunk.lol", "admin_token": "some-dummy-token"})
 				c := readConfigSuccess(t, r)
 				require.EqualValues(t, expected, c)
@@ -135,6 +137,8 @@ func TestConfig(t *testing.T) {
 				expected.AdminToken = "some-dummy-token"
 				expected.AccountTokenMaxTTL = 10 * time.Hour
 				expected.ProjectTokenMaxTTL = 11 * time.Hour
+				expected.Plaintext = true
+				expected.Insecure = true
 				updateConfigSuccess(
 					t,
 					b,
@@ -144,6 +148,8 @@ func TestConfig(t *testing.T) {
 						"admin_token":           "some-dummy-token",
 						"account_token_max_ttl": "10h",
 						"project_token_max_ttl": "11h",
+						"insecure":              "true",
+						"plaintext":             "true",
 					})
 				c := readConfigSuccess(t, r)
 				require.EqualValues(t, expected, c)
@@ -156,6 +162,8 @@ func TestConfig(t *testing.T) {
 				expected.AdminToken = "some-dummy-token"
 				expected.AccountTokenMaxTTL = 12 * time.Hour
 				expected.ProjectTokenMaxTTL = 12 * time.Hour
+				expected.Insecure = false
+				expected.Plaintext = false
 				updateConfigSuccess(
 					t,
 					b,
@@ -165,6 +173,8 @@ func TestConfig(t *testing.T) {
 						"admin_token":           "some-dummy-token",
 						"account_token_max_ttl": "50h",
 						"project_token_max_ttl": "40h",
+						"plaintext":             false,
+						"insecure":              false,
 					})
 				c := readConfigSuccess(t, r)
 				require.EqualValues(t, expected, c)
