@@ -3,3 +3,4 @@ cover.out
 .idea
 build.yaml
 plugins/
+e2e/logs

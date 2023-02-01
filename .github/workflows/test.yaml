@@ -46,5 +46,13 @@ jobs:
           kubernetes-version: v1.22.3
       - name: Run Tests
         run: make e2e
+      - name: Archive logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e logs
+          path: |
+            e2e/logs
       - name: Destroy
         run: make destroy
+        if: ${{ always() }}

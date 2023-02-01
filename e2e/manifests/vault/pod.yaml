@@ -10,7 +10,7 @@ spec:
   - name: vault
     image: ghcr.io/splunk/workflow-engine-base:2.0.12
     command: ["bash", "-c"]
-    args: ["while :; do if stat /plugins/vault-plugin-argocd-tokens; then sleep 5; vault server -dev -dev-root-token-id=root -dev-plugin-dir=/plugins -log-level=debug; exit $?; fi; done"]
+    args: ["echo Waiting for plugin to mount to container; while :; do if stat /plugins/vault-plugin-argocd-tokens 2>/dev/null; then sleep 5; vault server -dev -dev-root-token-id=root -dev-plugin-dir=/plugins -log-level=debug; exit $?; fi; done"]
     env:
       - name: VAULT_DEV_LISTEN_ADDRESS
         value: 0.0.0.0:8200
