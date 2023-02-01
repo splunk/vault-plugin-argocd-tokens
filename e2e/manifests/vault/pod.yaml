@@ -23,6 +23,6 @@ spec:
       - name: ENGINE_PATH
         value: wfecd-stg
       - name: VAULT_ADDR
-        value: http://vault.argocd-tokens-vault-plugin-testing.svc.cluster.local:8200
+        value: http://127.0.0.1:8200
     ports:
     - containerPort: 8200

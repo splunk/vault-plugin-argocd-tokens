@@ -60,5 +60,7 @@ jobs:
           path: |
             e2e/logs
       - name: Destroy
-        run: make destroy
         if: ${{ always() }}
+        run: |
+          make destroy
+          minikube stop

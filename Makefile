@@ -45,13 +45,15 @@ deploy-vault:
 
 .PHONY: e2e
 e2e: build deploy-argocd deploy-vault
-	echo "Provisioning Vault"
-	mkdir -p ./e2e/logs
-	
 	while ! kubectl exec -n argocd-tokens-vault-plugin-testing vault -- bash -c 'curl -Ss $$ARGOCD_SERVER 2>&1 > /dev/null'; do \
 		echo "Waiting for ArgoCD to be ready"; \
 		sleep 1; \
 	done
+	while ! kubectl exec -n argocd-tokens-vault-plugin-testing vault -- bash -c 'curl -Ss $$VAULT_ADDR 2>&1 > /dev/null'; do \
+		echo "Waiting for Vault to be ready"; \
+		sleep 1; \
+	done
+	mkdir -p ./e2e/logs
 	kubectl exec -n argocd-tokens-vault-plugin-testing vault -- bash ./scripts/configure-vault.sh
 	kubectl exec -n argocd-tokens-vault-plugin-testing vault -- bash ./scripts/run-scenarios.sh
 	kubectl logs -n argocd-tokens-vault-plugin-testing -l app.kubernetes.io/name=argocd-server > ./e2e/logs/argocd-server.log
