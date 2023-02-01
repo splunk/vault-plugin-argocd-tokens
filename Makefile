@@ -29,7 +29,6 @@ deploy-argocd:
 
 .PHONY: deploy-vault
 deploy-vault:
-	echo Deploying vault
 	docker pull ghcr.io/splunk/workflow-engine-base:2.0.12
 	kubectl create namespace argocd-tokens-vault-plugin-testing --dry-run=client -o yaml | kubectl apply -f -
 	kubectl apply -f ./e2e/manifests/vault
