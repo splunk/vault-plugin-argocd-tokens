@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vault
+  namespace: argocd-tokens-vault-plugin-testing
+  labels:
+    app: vault
+spec:
+  containers:
+  - name: vault
+    image: ghcr.io/splunk/workflow-engine-base:2.0.12
+    command: ["bash", "-c"]
+    args: ["echo Waiting for plugin to mount to container; while :; do if stat /plugins/vault-plugin-argocd-tokens 2>/dev/null; then sleep 5; vault server -dev -dev-root-token-id=root -dev-plugin-dir=/plugins -log-level=debug; exit $?; fi; done"]
+    env:
+      - name: VAULT_DEV_LISTEN_ADDRESS
+        value: 0.0.0.0:8200
+      - name: VAULT_DEV_ROOT_TOKEN_ID
+        value: 'root'
+      - name: VAULT_DISABLE_FILE_PERMISSIONS_CHECK
+        value: 'false'
+      - name: ARGOCD_SERVER
+        value: argocd-server.argocd-tokens-vault-plugin-testing.svc.cluster.local:80
+      - name: ENGINE_PATH
+        value: wfecd-stg
+      - name: VAULT_ADDR
+        value: http://127.0.0.1:8200
+    ports:
+    - containerPort: 8200

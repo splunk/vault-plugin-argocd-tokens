@@ -34,12 +34,6 @@ spec:
       - command:
         - argocd-server
         - --insecure
-        resources:
-          limits:
-            cpu: 200m
-            memory: 200Mi
-          requests:
-            cpu: 50m
         env:
         - name: ARGOCD_SERVER_INSECURE
           valueFrom:
