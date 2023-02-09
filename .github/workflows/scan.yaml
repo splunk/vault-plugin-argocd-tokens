@@ -11,9 +11,10 @@ on:
      - main
      - release/v*.*.*
 jobs:
-  FOSSA:
-    uses: splunk/oss-scanning/.github/workflows/oss-scan.yml@main
-    secrets: inherit
+  #TODO: Uncomment when https://splunk.atlassian.net/browse/PRODSECOPS-24080 is complete 
+  # FOSSA:
+  #   uses: splunk/oss-scanning/.github/workflows/oss-scan.yml@main
+  #   secrets: inherit
   SAST:
     name: Semgrep
     runs-on: ubuntu-latest

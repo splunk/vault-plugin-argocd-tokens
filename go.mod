@@ -1,4 +1,4 @@
-module github.com/splunk/argocd-tokens-vault-plugin
+module github.com/splunk/vault-plugin-argocd-tokens
 
 go 1.19
 

@@ -50,8 +50,8 @@ jobs:
         if: ${{ failure() }}  #Only collect logs if e2e tests fail since it will not collect logs in makefile
         run: |
           mkdir -p e2e/logs
-          kubectl logs -n argocd-tokens-vault-plugin-testing -l app.kubernetes.io/name=argocd-server > ./e2e/logs/argocd-server.log
-          kubectl logs -n argocd-tokens-vault-plugin-testing vault > ./e2e/logs/vault.log
+          kubectl logs -n vault-plugin-argocd-tokens-testing -l app.kubernetes.io/name=argocd-server > ./e2e/logs/argocd-server.log
+          kubectl logs -n vault-plugin-argocd-tokens-testing vault > ./e2e/logs/vault.log
       - name: Archive logs
         if: ${{ always() }}
         uses: actions/upload-artifact@v3

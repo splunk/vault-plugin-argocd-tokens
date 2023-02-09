@@ -1,4 +1,4 @@
-password=$(kubectl get secret -n argocd-tokens-vault-plugin-testing argocd-initial-admin-secret --output=json | jq -r '.data.password' | base64 --decode)
+password=$(kubectl get secret -n vault-plugin-argocd-tokens-testing argocd-initial-admin-secret --output=json | jq -r '.data.password' | base64 --decode)
 
 argocd login --insecure --plaintext --username=admin --password=$password $ARGOCD_SERVER
 
