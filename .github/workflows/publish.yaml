@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         # build and publish in parallel: linux/amd64, darwin/amd64
-        goos: [linux, darwin]
+        goos: [linux]
         goarch: [amd64]
     steps:
       - uses: actions/checkout@v2
@@ -22,5 +22,5 @@ jobs:
           goarch: ${{ matrix.goarch }}
           goversion: 1.19.5
           project_path: ./cmd/vault-plugin-argocd-tokens
-          binary_name: argocd-tokens-vault-plugin
-          asset_name: argocd-tokens-vault-plugin-${{ matrix.goos }}-${{ matrix.goarch }}
+          binary_name: vault-plugin-argocd-tokens
+          asset_name: vault-plugin-argocd-tokens-${{ matrix.goos }}-${{ matrix.goarch }}

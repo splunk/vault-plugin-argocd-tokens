@@ -6,7 +6,7 @@ import (
 
 	"github.com/hashicorp/vault/api"
 	"github.com/hashicorp/vault/sdk/plugin"
-	backend "github.com/splunk/argocd-tokens-vault-plugin/internal/plugin"
+	backend "github.com/splunk/vault-plugin-argocd-tokens/internal/plugin"
 )
 
 func main() {
