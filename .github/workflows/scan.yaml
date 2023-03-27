@@ -10,6 +10,8 @@ on:
     branches:
      - main
      - release/v*.*.*
+permissions:
+  contents: read
 jobs:
   #TODO: Uncomment when https://splunk.atlassian.net/browse/PRODSECOPS-24080 is complete 
   # FOSSA:

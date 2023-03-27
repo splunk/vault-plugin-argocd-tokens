@@ -1,4 +1,6 @@
 name: Build
+permissions:
+
 on:
   push:
     branches:
@@ -7,13 +9,12 @@ on:
     branches:
      - main
      - release/v*.*.*
-permissions:
-  contents: write
-  pull-requests: read
 jobs:
   Build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Setup Golang
         uses: actions/setup-go@v3
@@ -37,6 +38,8 @@ jobs:
     name: Tag
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
+    permissions:
+      contents: write
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
