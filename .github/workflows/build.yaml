@@ -1,6 +1,4 @@
 name: Build
-permissions:
-
 on:
   push:
     branches:
