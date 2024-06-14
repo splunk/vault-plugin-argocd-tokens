@@ -12,6 +12,7 @@ on:
      - release/v*.*.*
 permissions:
   contents: read
+  packages: read
 jobs:
   fossa-scan:
     uses: splunk/oss-scanning-public/.github/workflows/oss-scan.yml@main
