@@ -3,6 +3,7 @@ package plugin
 import (
 	"context"
 	"github.com/argoproj/argo-cd/v2/pkg/apiclient/account"
+	"github.com/argoproj/argo-cd/v2/pkg/apiclient/application"
 	"github.com/argoproj/argo-cd/v2/pkg/apiclient/project"
 	"github.com/argoproj/argo-cd/v2/pkg/apis/application/v1alpha1"
 	"google.golang.org/grpc"
@@ -87,6 +88,10 @@ func (client *testProjectClient) ListEvents(ctx context.Context, in *project.Pro
 	return nil, nil
 }
 func (client *testProjectClient) GetSyncWindowsState(ctx context.Context, in *project.SyncWindowsQuery, opts ...grpc.CallOption) (*project.SyncWindowsResponse, error) {
+	return nil, nil
+}
+
+func (client *testProjectClient) ListLinks(ctx context.Context, in *project.ListProjectLinksRequest, opts ...grpc.CallOption) (*application.LinksResponse, error) {
 	return nil, nil
 }
 
