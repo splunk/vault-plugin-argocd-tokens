@@ -1,6 +1,8 @@
 module github.com/splunk/vault-plugin-argocd-tokens
 
-go 1.19
+go 1.21
+
+toolchain go1.23.1
 
 require (
 	github.com/argoproj/argo-cd/v2 v2.10.12
@@ -196,6 +198,7 @@ require (
 
 replace (
 	github.com/argoproj/gitops-engine => github.com/argoproj/gitops-engine v0.7.1-0.20240122213038-792124280fcc
+	github.com/imdario/mergo => dario.cat/mergo v1.0.1
 	golang.org/x/net => golang.org/x/net v0.23.0
 	google.golang.org/protobuf => google.golang.org/protobuf v1.33.0
 	k8s.io/api => k8s.io/api v0.26.11

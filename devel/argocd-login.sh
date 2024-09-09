@@ -4,7 +4,8 @@
 pushd $(dirname "$0")
 source ./common.sh
 
-argocd login "${WFECDSTG_SERVER}" --sso
+kubectl config set-context ${KUBE_CONTEXT} --namespace ${KUBE_NS}
+argocd login "${WFECDSTG_SERVER}"  --core
 export WFECDSTG_TOKEN=$(argocd account generate-token -a argocd-tokens-plugin -e 720h)
 
 if [[ "${WFECDSTG_TOKEN:-}" == "" ]]

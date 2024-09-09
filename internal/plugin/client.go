@@ -12,6 +12,10 @@ import (
 	"github.com/google/uuid"
 )
 
+const (
+	totalRetries = 3
+)
+
 type projectClientContext struct {
 	client        project.ProjectServiceClient
 	clientContext context.Context
@@ -106,31 +110,39 @@ func NewAccountClient(ctx context.Context, config *configEntry) (*accountClientC
 }
 
 func (clientCtx *projectClientContext) GenerateToken(projectName string, projectRoleName string, expiresIn time.Duration) (*projectToken, error) {
-	id := uuid.New().String()
-	createTokenRequest := &project.ProjectTokenCreateRequest{
-		Project:   projectName,
-		Role:      projectRoleName,
-		ExpiresIn: toDurationSeconds(expiresIn),
-		Id:        id,
-	}
+	retries := 0
+	var response *project.ProjectTokenResponse
+	var err error
 
-	projectClient := clientCtx.client
-	response, err := projectClient.CreateToken(clientCtx.clientContext, createTokenRequest)
-	if err != nil {
-		return nil, fmt.Errorf("error in Generate token for projectClient: %s", err)
-	}
+	for retries < totalRetries {
+		id := uuid.New().String()
+		createTokenRequest := &project.ProjectTokenCreateRequest{
+			Project:   projectName,
+			Role:      projectRoleName,
+			ExpiresIn: toDurationSeconds(expiresIn),
+			Id:        id,
+		}
 
-	token := projectToken{
-		metadata: projectTokenMetadata{
-			Id:          id,
-			ProjectName: projectName,
-			RoleName:    projectRoleName,
-			TTL:         expiresIn,
-		},
-		token: response.Token,
-	}
+		projectClient := clientCtx.client
+		response, err = projectClient.CreateToken(clientCtx.clientContext, createTokenRequest)
 
-	return &token, nil
+		if err == nil {
+			token := projectToken{
+				metadata: projectTokenMetadata{
+					Id:          id,
+					ProjectName: projectName,
+					RoleName:    projectRoleName,
+					TTL:         expiresIn,
+				},
+				token: response.Token,
+			}
+		
+			return &token, nil
+		} 
+		retries++
+	}
+	return nil, fmt.Errorf("Error in Generate token for projectClient: %s", err)
+
 }
 
 func (clientCtx *accountClientContext) GenerateToken(accountName string, expiresIn time.Duration) (*accountToken, error) {
