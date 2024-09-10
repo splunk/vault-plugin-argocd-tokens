@@ -13,8 +13,10 @@ import (
 )
 
 const (
-	totalRetries = 3
+	totalRetries = 4
 )
+
+var retryWaitSeconds = []time.Duration{1, 3, 5}	
 
 type projectClientContext struct {
 	client        project.ProjectServiceClient
@@ -138,7 +140,8 @@ func (clientCtx *projectClientContext) GenerateToken(projectName string, project
 			}
 		
 			return &token, nil
-		} 
+		}
+		time.Sleep(retryWaitSeconds[retries] * time.Second)
 		retries++
 	}
 	return nil, fmt.Errorf("Error in Generate token for projectClient: %s", err)
@@ -146,29 +149,37 @@ func (clientCtx *projectClientContext) GenerateToken(projectName string, project
 }
 
 func (clientCtx *accountClientContext) GenerateToken(accountName string, expiresIn time.Duration) (*accountToken, error) {
-	id := uuid.New().String()
-	createTokenRequest := &account.CreateTokenRequest{
-		Name:      accountName,
-		ExpiresIn: toDurationSeconds(expiresIn),
-		Id:        id,
-	}
+	retries := 0
+	var response *account.CreateTokenResponse
+	var err error
 
-	accountClient := clientCtx.client
-	response, err := accountClient.CreateToken(clientCtx.clientContext, createTokenRequest)
-	if err != nil {
-		return nil, fmt.Errorf("error in Generate token for accountClient: %s", err)
-	}
+	for retries < totalRetries {
+		id := uuid.New().String()
+		createTokenRequest := &account.CreateTokenRequest{
+			Name:      accountName,
+			ExpiresIn: toDurationSeconds(expiresIn),
+			Id:        id,
+		}
 
-	token := accountToken{
-		metadata: accountTokenMetadata{
-			Id:          id,
-			AccountName: accountName,
-			TTL:         expiresIn,
-		},
-		token: response.Token,
+		accountClient := clientCtx.client
+		response, err = accountClient.CreateToken(clientCtx.clientContext, createTokenRequest)
+		if err == nil {
+			token := accountToken{
+				metadata: accountTokenMetadata{
+					Id:          id,
+					AccountName: accountName,
+					TTL:         expiresIn,
+				},
+				token: response.Token,
+			}
+		
+			return &token, nil
+		}
+		time.Sleep(retryWaitSeconds[retries] * time.Second)
+		retries++
 	}
+	return nil, fmt.Errorf("Error in Generate token for accountClient: %s", err)
 
-	return &token, nil
 }
 
 func (clientCtx *accountClientContext) DeleteToken(tokenId string, accountName string) error {
