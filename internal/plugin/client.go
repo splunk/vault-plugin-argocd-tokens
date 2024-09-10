@@ -16,7 +16,7 @@ const (
 	totalRetries = 4
 )
 
-var retryWaitSeconds = []time.Duration{1, 3, 5, 0} // last value is not used/should remain 0
+var retryWaitSeconds = []time.Duration{0, 1, 3, 5} // first value should remain 0
 
 type projectClientContext struct {
 	client        project.ProjectServiceClient
@@ -118,6 +118,7 @@ func (clientCtx *projectClientContext) GenerateToken(projectName string, project
 
 	for retries < totalRetries {
 		id := uuid.New().String()
+		time.Sleep(retryWaitSeconds[retries] * time.Second)
 		createTokenRequest := &project.ProjectTokenCreateRequest{
 			Project:   projectName,
 			Role:      projectRoleName,
@@ -141,7 +142,6 @@ func (clientCtx *projectClientContext) GenerateToken(projectName string, project
 		
 			return &token, nil
 		}
-		time.Sleep(retryWaitSeconds[retries] * time.Second)
 		retries++
 	}
 	return nil, fmt.Errorf("Error in Generate token for projectClient: %s", err)
@@ -155,6 +155,7 @@ func (clientCtx *accountClientContext) GenerateToken(accountName string, expires
 
 	for retries < totalRetries {
 		id := uuid.New().String()
+		time.Sleep(retryWaitSeconds[retries] * time.Second)
 		createTokenRequest := &account.CreateTokenRequest{
 			Name:      accountName,
 			ExpiresIn: toDurationSeconds(expiresIn),
@@ -175,7 +176,6 @@ func (clientCtx *accountClientContext) GenerateToken(accountName string, expires
 		
 			return &token, nil
 		}
-		time.Sleep(retryWaitSeconds[retries] * time.Second)
 		retries++
 	}
 	return nil, fmt.Errorf("Error in Generate token for accountClient: %s", err)
