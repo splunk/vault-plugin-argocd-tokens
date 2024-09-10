@@ -2,8 +2,6 @@ module github.com/splunk/vault-plugin-argocd-tokens
 
 go 1.21
 
-toolchain go1.23.1
-
 require (
 	github.com/argoproj/argo-cd/v2 v2.10.12
 	github.com/google/uuid v1.3.1
