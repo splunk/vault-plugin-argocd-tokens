@@ -25,11 +25,7 @@ limitations under the License.
 ## Setup
 
 - Run `./devel/run-test-vault.sh` in a terminal. Keep this open. This will print useful logs from the vault server
-- Run `source ./devel/argocd-login.sh` in a new session. It is important to source this script as the exported variables are needed later.
-  - You will likely need to run `okta-kube-token` and create an escalation request like the following first:
-```
-kubectl escalation -n $KUBE_NS --context $KUBE_CONTEXT request "Vault plugin test" --approve
-```
+- Run `source ./devel/argocd-login.sh` in a new session. It is important to source this script as the exported variables are needed later. Ensure your KUBECONFIG is properly exported.
 - Run `./devel/vault-config.sh` to configure the vault instance (enable the plugin, write the config etc.)
 - Run `./devel/vault-tests.sh` to run the tests
 

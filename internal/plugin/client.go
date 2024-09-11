@@ -16,7 +16,7 @@ const (
 	totalRetries = 4
 )
 
-var retryWaitSeconds = []time.Duration{0, 1, 3, 5} // first value should remain 0
+var retryWaitSeconds = []time.Duration{0, 3, 5, 10} // first value should remain 0
 
 type projectClientContext struct {
 	client        project.ProjectServiceClient
